@@ -1,151 +1,84 @@
 <template>
-  <v-container>
-    <v-row class="text-center">
-      <v-col cols="12">
-        <v-img
-          :src="require('../assets/logo.svg')"
-          class="my-3"
-          contain
-          height="200"
-        />
-      </v-col>
+  <div>
+    <div>
+      <GmapAutocomplete
+      class="v-text-field"
+        @place_changed="setPlace1"
+        :options="{ 
+          types: ['(cities)'], 
+          language: 'iw', 
+          fields: ['name', 'geometry', 'place_id'] 
+        }"
+        placeholder="הזן כתובת"
+      />
+    </div>
 
-      <v-col class="mb-4">
-        <h1 class="display-2 font-weight-bold mb-3">
-          Welcome to Vuetify
-        </h1>
-
-        <p class="subheading font-weight-regular">
-          For help and collaboration with other Vuetify developers,
-          <br>please join our online
-          <a
-            href="https://community.vuetifyjs.com"
-            target="_blank"
-          >Discord Community</a>
-        </p>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          What's next?
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(next, i) in whatsNext"
-            :key="i"
-            :href="next.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ next.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          Important Links
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(link, i) in importantLinks"
-            :key="i"
-            :href="link.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ link.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          Ecosystem
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(eco, i) in ecosystem"
-            :key="i"
-            :href="eco.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ eco.text }}
-          </a>
-        </v-row>
-      </v-col>
-    </v-row>
-  </v-container>
+    <div>
+      <GmapAutocomplete
+      class="v-text-field"
+        @place_changed="setPlace2"
+        :options="{ 
+          types: ['(cities)'], 
+          language: 'iw', 
+          fields: ['name', 'geometry', 'place_id'] 
+        }"
+        placeholder="הזן כתובת"
+      />
+    </div>
+    
+    <v-btn @click="calculateDistance">Рассчитать расстояние</v-btn>
+  </div>
 </template>
 
 <script>
-  export default {
-    name: 'HelloWorld',
+export default {
+  data() {
+    return {
+      place1: null,
+      place2: null
+    }
+  },
+  methods: {
+    setPlace1(place) {
+      this.place1 = place
+    },
+    setPlace2(place) {
+      this.place2 = place
+    },
+    calculateDistance() {
+      if (!this.place1 || !this.place2) return
 
-    data: () => ({
-      ecosystem: [
-        {
-          text: 'vuetify-loader',
-          href: 'https://github.com/vuetifyjs/vuetify-loader',
-        },
-        {
-          text: 'github',
-          href: 'https://github.com/vuetifyjs/vuetify',
-        },
-        {
-          text: 'awesome-vuetify',
-          href: 'https://github.com/vuetifyjs/awesome-vuetify',
-        },
-      ],
-      importantLinks: [
-        {
-          text: 'Documentation',
-          href: 'https://vuetifyjs.com',
-        },
-        {
-          text: 'Chat',
-          href: 'https://community.vuetifyjs.com',
-        },
-        {
-          text: 'Made with Vuetify',
-          href: 'https://madewithvuejs.com/vuetify',
-        },
-        {
-          text: 'Twitter',
-          href: 'https://twitter.com/vuetifyjs',
-        },
-        {
-          text: 'Articles',
-          href: 'https://medium.com/vuetify',
-        },
-      ],
-      whatsNext: [
-        {
-          text: 'Explore components',
-          href: 'https://vuetifyjs.com/components/api-explorer',
-        },
-        {
-          text: 'Select a layout',
-          href: 'https://vuetifyjs.com/getting-started/pre-made-layouts',
-        },
-        {
-          text: 'Frequently Asked Questions',
-          href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions',
-        },
-      ],
-    }),
+      const toRad = value => (value * Math.PI) / 180
+
+      const lat1 = toRad(this.place1.geometry.location.lat())
+      const lng1 = toRad(this.place1.geometry.location.lng())
+      const lat2 = toRad(this.place2.geometry.location.lat())
+      const lng2 = toRad(this.place2.geometry.location.lng())
+
+      const earthRadius = 6371 
+
+      const dLat = lat2 - lat1
+      const dLng = lng2 - lng1
+
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1) * Math.cos(lat2) *
+        Math.sin(dLng / 2) * Math.sin(dLng / 2)
+
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+      const distance = earthRadius * c
+
+      console.log('Расстояние: ', distance)
+    }
   }
+}
 </script>
+
+<style>
+.pac-target-input {
+    outline: 1px solid #000;
+    margin: 10px;
+    border-radius: 5px;
+    padding: 5px;
+}
+</style>
