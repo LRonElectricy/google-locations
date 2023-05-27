@@ -31,16 +31,36 @@ Vue.use(VueGoogleMaps, {
   load: {
     key: 'AIzaSyD66m4le_x6_zZOPJiy4cWuHLIWB7bNh-g',
     libraries: 'places', // This is required if you use the Autocomplete plugin
+    language: 'iw',
   },
 });
 
 Vue.config.productionTip = false
 
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: h => h(App)
-}).$mount('#app')
-
+let app;
+firebase.auth().onAuthStateChanged(user => {
+  // console.log(user);
+  if (!app) {
+    app = new Vue({
+      router,
+      store,
+      vuetify,
+      render: h => h(App),
+      created() {
+        if (user) {
+          // this.$store.dispatch('autoSignIn', user)
+        }
+      }
+    }).$mount('#app')
+  }
+})
 export default fire;
+    
+
+// new Vue({
+//   router,
+//   store,
+//   vuetify,
+//   render: h => h(App)
+// }).$mount('#app')
+
