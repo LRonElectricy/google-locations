@@ -1,7 +1,5 @@
 <template>
     <div>
-
-
         <div v-if="posts.length > 0">
             <div v-for="post in posts" :key="post.id">
                 {{ post.name }} - {{ post.placeFrom.name }} - {{ post.placeTo.name }}
