@@ -2,12 +2,15 @@
   <div>
     <div>
       <GmapAutocomplete
-      class="v-text-field"
         @place_changed="setPlace1"
         :options="{ 
           types: ['(cities)'], 
           language: 'iw', 
-          fields: ['name', 'geometry', 'place_id'] 
+          fields: ['name', 'geometry', 'place_id'],
+          //only israel
+          componentRestrictions: {
+            country: 'il'
+          }
         }"
         placeholder="הזן כתובת"
       />
@@ -15,18 +18,23 @@
 
     <div>
       <GmapAutocomplete
-      class="v-text-field"
         @place_changed="setPlace2"
         :options="{ 
           types: ['(cities)'], 
           language: 'iw', 
-          fields: ['name', 'geometry', 'place_id'] 
+          fields: ['name', 'geometry', 'place_id'],
+          componentRestrictions: {
+            country: 'il'
+          }
         }"
+        
         placeholder="הזן כתובת"
       />
+
     </div>
     
     <v-btn @click="calculateDistance">Рассчитать расстояние</v-btn>
+    <div v-if="distance">Расстояние: {{ distance }} км</div>
   </div>
 </template>
 
@@ -35,7 +43,8 @@ export default {
   data() {
     return {
       place1: null,
-      place2: null
+      place2: null,
+      distance: null
     }
   },
   methods: {
@@ -45,6 +54,7 @@ export default {
     setPlace2(place) {
       this.place2 = place
     },
+    
     calculateDistance() {
       if (!this.place1 || !this.place2) return
 
@@ -66,8 +76,9 @@ export default {
 
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
-      const distance = earthRadius * c
-
+      let distance = earthRadius * c
+      distance = distance.toFixed(2)
+      this.distance = distance
       console.log('Расстояние: ', distance)
     }
   }
