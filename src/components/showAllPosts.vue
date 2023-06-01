@@ -1,8 +1,8 @@
 <template>
     <div>
         <div v-if="posts.length > 0">
-            <div v-for="post in posts" :key="post.id">
-                {{ post.name }} - {{ post.placeFrom.name }} - {{ post.placeTo.name }}
+            <div v-for="(post, index) in posts" :key="post.id">
+              {{ index }} - {{ post.name }} - {{ post.placeFrom.name }} - {{ post.placeTo.name }}
             </div>
         </div>
         <div v-else>Нет записей</div>

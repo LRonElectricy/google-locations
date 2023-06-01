@@ -39,6 +39,7 @@ export default {
         setPlaceFrom(place) {
             this.placeFrom = place
             this.placeFrom.geometry = { lat: this.placeFrom.geometry.location.lat(), lng: this.placeFrom.geometry.location.lng() }
+            console.log(this.placeFrom)
         },
         setPlaceTo(place) {
             this.placeTo = place
@@ -62,7 +63,7 @@ export default {
             this.placeFromForm = null
             this.placeToForm = null
             this.name = ""
-        }
+        },
     }
 }
 </script>
